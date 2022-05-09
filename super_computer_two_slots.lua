@@ -63,11 +63,6 @@ super_computer_two_slots:control_data_register(
 -- Formspec --
 --------------
 
-local player_inv = "list[current_player;main;1.5,3;8,4;]";
-if minetest.get_modpath("hades_core") then
-  player_inv = "list[current_player;main;0.5,3;10,4;]";
-end
-
 function super_computer_two_slots:get_formspec(meta, production_percent, consumption_percent)
   return super_computer.super_computer.get_formspec(consumption_percent);
 end
@@ -75,6 +70,8 @@ end
 ---------------
 -- Callbacks --
 ---------------
+
+super_computer_two_slots.need_wait = super_computer.super_computer.need_wait
 
 function super_computer_two_slots:cb_allow_metadata_inventory_put(pos, listname, index, stack, player)
   return super_computer.super_computer.allow_metadata_inventory_put(pos, listname, index, stack, player)

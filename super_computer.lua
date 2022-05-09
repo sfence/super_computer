@@ -165,6 +165,41 @@ function super_computer.super_computer.get_power_demand(self, pos, meta)
   return demand_1 + demand_2
 end
 
+function super_computer.super_computer.need_wait(self, timer_step)
+  -- use_input, use_usage, need_wait
+  local slot_1 = timer_step.inv:get_stack(self.use_stack, 1)
+  local slot_2 = timer_step.inv:get_stack(self.use_stack, 2)
+  local def_1 = slot_1:get_definition()
+  local def_2 = slot_2:get_definition()
+  if      ((def_1==nil) or (def_1._mflops==nil))
+      and ((def_2==nil) or (def_2._mflops==nil)) then
+    return nil, nil, true;
+  end
+  
+  -- check for supply connection
+  if (self.need_supply) then
+    local supply_speed = self:have_supply(timer_step.pos, timer_step.meta)
+    if (supply_speed<=0) then
+      return use_input, use_usage, true;
+    end
+    if use_input then
+      use_input = table.copy(use_input)
+      use_input.consumption_step_size = use_input.consumption_step_size*supply_speed
+    end
+    if use_usage then
+      use_usage = table.copy(use_usage)
+      use_usage.production_step_size = use_usage.production_step_size*supply_speed
+    end
+  end
+  
+  -- check for control
+  if (self.have_control) then
+    return use_input, use_usage, self:control_wait(timer_step);
+  end
+  
+  return use_input, use_usage, false;
+end
+
 local function get_mflops (stack, part)
   local def = stack:get_definition()
   local mflops = {

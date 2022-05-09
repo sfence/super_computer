@@ -7,6 +7,7 @@ local mflops_supply = {
         if (mflops_input>0) then
           local demand = supply_data.demand or supply_data.get_demand(self, pos, meta)
           local coef = mflops_input/demand
+          meta:set_int("mflops_input", 0)
           return supply_data.run_speed*math.min(coef, 1.0);
         end
         return 0;
@@ -34,6 +35,7 @@ local mflops_supply = {
 appliances.add_supply("super_computer_mflops_supply", mflops_supply)
 
 -- abm function
+--[[
 minetest.register_abm({
     label = "Check MFLOPS powered appliances",
     nodenames = {"group:mflops_powered"},
@@ -42,7 +44,7 @@ minetest.register_abm({
     action = function(pos, node)
       local node_def = minetest.registered_nodes[node.name]
       for _,side in pairs(node_def._mflops_connect_sides) do
-        local side_pos = appliances.get_side_pos(pos, side);
+        local side_pos = appliances.get_side_pos(pos, node, side);
         local side_node = minetest.get_node(side_pos);
         if minetest.get_item_group(side_node.name, "mflops_computer")>0 then
           return
@@ -52,4 +54,5 @@ minetest.register_abm({
       meta:set_int("mflops_input", 0)
     end,
  })
+--]]
 

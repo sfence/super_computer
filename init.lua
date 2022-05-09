@@ -5,7 +5,7 @@ super_computer = {
 
 local modpath = minetest.get_modpath(minetest.get_current_modname());
 
-super_computer.have_laptop = (minetest.get_modpath("laptop")~=nil) and (minetest.get_modpath("hades_laptop")~=nil);
+super_computer.have_laptop = (minetest.get_modpath("laptop")~=nil);
 
 dofile(modpath.."/functions.lua");
 
